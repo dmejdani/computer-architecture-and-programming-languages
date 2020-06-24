@@ -1,0 +1,208 @@
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{hyperref}
+\usepackage[latin1]{inputenc}
+\usepackage[english]{babel}
+\usepackage{a4wide}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{ifthen}
+\usepackage{listings}
+% move the asterisk at the right position
+\lstset{basicstyle=\ttfamily,tabsize=4,literate={*}{${}^*{}$}1}
+%\lstset{language=C,basicstyle=\ttfamily}
+\usepackage{moreverb}
+\usepackage{palatino}
+\usepackage{multicol}
+\usepackage{tabularx}
+\usepackage{comment}
+\usepackage{verbatim}
+\usepackage{color}
+
+%% personal packages
+\usepackage[super]{nth}
+\usepackage{enumitem}
+\usepackage[nodayofweek]{datetime}
+\usepackage{circuitikz}
+\usepackage{karnaugh-map}
+
+%% new date format
+\newdateformat{mydate}{\twodigit{\THEDAY}{ }\shortmonthname[\THEMONTH], \THEYEAR}
+
+%% pdflatex?
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+\pdffalse % we are not running PDFLaTeX
+\else
+\pdfoutput=1 % we are running PDFLaTeX
+\pdftrue
+\fi
+\ifpdf
+\usepackage{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\parindent=0cm
+\parskip=0cm
+
+\setlength{\columnseprule}{0.4pt}
+\addtolength{\columnsep}{2pt}
+
+\addtolength{\textheight}{5.5cm}
+\addtolength{\topmargin}{-26mm}
+\pagestyle{empty}
+
+%%
+%% Sheet setup
+%% 
+\newcommand{\coursename}{Computer Architecture and Programming Languages}
+\newcommand{\courseno}{CO20-320241}
+
+\newcommand{\sheettitle}{Homework}
+\newcommand{\mytitle}{}
+\newcommand{\mytoday}{\today}
+
+
+% Current Assignment number
+\newcounter{assignmentno}
+\setcounter{assignmentno}{6}
+
+% Current Problem number, should always start at 1
+\newcounter{problemno}
+\setcounter{problemno}{1}
+
+%%
+%% problem and bonus environment
+%%
+\newcounter{probcalc}
+\newcommand{\problem}[2]{
+	\pagebreak[2]
+	\setcounter{probcalc}{#2}
+	~\\
+	{\large \textbf{Problem {\arabic{assignmentno}}.{\arabic{problemno}}} \hspace{0.2cm}\textit{#1}} \refstepcounter{problemno}\vspace{2pt}\\}
+
+\newcommand{\bonus}[2]{
+	\pagebreak[2]
+	\setcounter{probcalc}{#2}
+	~\\
+	{\large \textbf{Bonus Problem \textcolor{blue}{\arabic{assignmentno}}.\textcolor{blue}{\arabic{problemno}}} \hspace{0.2cm}\textit{#1}} \refstepcounter{problemno}\vspace{2pt}\\}
+
+%% some counters  
+\newcommand{\assignment}{\arabic{assignmentno}}
+
+%% solution  
+\newcommand{\solution}{\pagebreak[2]{\bf Solution:}\\}
+
+%% Hyperref Setup
+\hypersetup{pdftitle={Homework \assignment},
+	pdfsubject={\coursename},
+	pdfauthor={},
+	pdfcreator={},
+	pdfkeywords={Computer Architecture and Programming Languages},
+	%  pdfpagemode={FullScreen},
+	%colorlinks=true,
+	%bookmarks=true,
+	%hyperindex=true,
+	bookmarksopen=false,
+	bookmarksnumbered=true,
+	breaklinks=true,
+	%urlcolor=darkblue
+	urlbordercolor={0 0 0.7}
+}
+
+\begin{document}
+	\coursename \hfill Course: \courseno\\
+	Jacobs University Bremen \hfill \mytoday\\
+	{Desar Mejdani}\hfill
+	\vspace*{0.3cm}\\
+	\begin{center}
+		{\Large \sheettitle{} {\assignment}\\}
+	\end{center}
+	
+\problem{}{0}
+\solution
+Only 5 bits are needed because there are in total 32 registers. Thus, the number of needed registers is 5. With 4 bits, it would not be possible to represent all of them. With 6, there would be a bit which would never be used. We would waste a bit.
+
+
+\problem{}{0}
+\solution
+\begin{enumerate}[label=(\alph*)]
+	\item 
+	\begin{verbatim}
+	sub $t2, $t0, $t1 # add t0 and t1 and store at t2
+	\end{verbatim}
+	
+		\item 
+	\begin{verbatim}
+	lw $s2,4($s1) # load s1 + 4 into s2
+	\end{verbatim}
+	
+\end{enumerate}
+
+\problem{}{0}
+\solution
+
+\begin{enumerate}[label=(\alph*)]
+	\item 
+	\begin{verbatim}
+	000000 01000 01001 01010 00000 100010
+	\end{verbatim}
+
+	\item 
+	\begin{verbatim}
+	100011 10001 10010 0000000000000100
+	\end{verbatim}	
+	
+\end{enumerate}
+
+	
+\problem{}{0}
+\solution
+\begin{verbatim}slt $t2, $t0, $t1\end{verbatim} 
+sets \$t2 to 1 if \$t0 is less than \$t1, which is true. \\
+\begin{verbatim}beq $t2, $0, ELSE\end{verbatim} 
+branches to ELSE if \$t2 and \$0 are equal, which is false. \\
+\begin{verbatim}j DONE\end{verbatim} 
+jumps to the end of the program.\\
+Final value of \$t2 is 1 = 0000\,0000\,0000\,0000\,0000\,0000\,0000\,0001.
+
+	
+\problem{}{0}
+\solution
+\begin{verbatim}
+lw $t0, 24($s0) 	# load A[6] into t0
+add $t0, $t0, $s1	# add t0 and s1 and store at t0
+sw $t0, 24($s0)		# save t0 at A[6]
+\end{verbatim}
+
+\problem{}{0}
+\solution
+\begin{verbatim}
+lui $s4, 35 		# load the upper 16 bits
+ori $s4, $s4, 35	# or immediate s4 with 35 and store at s4
+\end{verbatim}
+
+\newpage
+\problem{}{0}
+\solution
+\begin{verbatim}
+li $t0, 0 # load immediate 0 at t0
+li $t1, 8 # load immediate 8 at t1
+
+LOOP:
+		beq $t1, $t0, EXIT # check if i==8, if true exit
+		addi $s0, $s0, 4   # add 4 to s0 and store at s0
+		addi $t0, $t0, 1   # i++
+		j LOOP			   # repeat
+EXIT: ...
+\end{verbatim}
+	
+\end{document}
+

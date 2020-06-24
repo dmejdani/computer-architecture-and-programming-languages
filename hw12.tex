@@ -1,0 +1,183 @@
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{hyperref}
+\usepackage[latin1]{inputenc}
+\usepackage[english]{babel}
+\usepackage{a4wide}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{ifthen}
+\usepackage{listings}
+% move the asterisk at the right position
+\lstset{basicstyle=\ttfamily,tabsize=4,literate={*}{${}^*{}$}1}
+%\lstset{language=C,basicstyle=\ttfamily}
+\usepackage{moreverb}
+\usepackage{palatino}
+\usepackage{multicol}
+\usepackage{tabularx}
+\usepackage{comment}
+\usepackage{verbatim}
+\usepackage{color}
+
+%% personal packages
+\usepackage[super]{nth}
+\usepackage{enumitem}
+\usepackage[nodayofweek]{datetime}
+\usepackage{circuitikz}
+\usepackage{karnaugh-map}
+\usepackage{textcomp}
+\renewcommand{\textrightarrow}{$\rightarrow$}
+
+%% new date format
+\newdateformat{mydate}{\twodigit{\THEDAY}{ }\shortmonthname[\THEMONTH], \THEYEAR}
+
+%% pdflatex?
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+\pdffalse % we are not running PDFLaTeX
+\else
+\pdfoutput=1 % we are running PDFLaTeX
+\pdftrue
+\fi
+\ifpdf
+\usepackage{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\parindent=0cm
+\parskip=0cm
+
+\setlength{\columnseprule}{0.4pt}
+\addtolength{\columnsep}{2pt}
+
+\addtolength{\textheight}{5.5cm}
+\addtolength{\topmargin}{-26mm}
+\pagestyle{empty}
+
+%%
+%% Sheet setup
+%% 
+\newcommand{\coursename}{Computer Architecture and Programming Languages}
+\newcommand{\courseno}{CO20-320241}
+
+\newcommand{\sheettitle}{Homework}
+\newcommand{\mytitle}{}
+\newcommand{\mytoday}{\today}
+
+
+% Current Assignment number
+\newcounter{assignmentno}
+\setcounter{assignmentno}{12}
+
+% Current Problem number, should always start at 1
+\newcounter{problemno}
+\setcounter{problemno}{1}
+
+%%
+%% problem and bonus environment
+%%
+\newcounter{probcalc}
+\newcommand{\problem}[2]{
+	\pagebreak[2]
+	\setcounter{probcalc}{#2}
+	~\\
+	{\large \textbf{Problem {\arabic{assignmentno}}.{\arabic{problemno}}} \hspace{0.2cm}\textit{#1}} \refstepcounter{problemno}\vspace{2pt}\\}
+
+\newcommand{\bonus}[2]{
+	\pagebreak[2]
+	\setcounter{probcalc}{#2}
+	~\\
+	{\large \textbf{Bonus Problem \textcolor{blue}{\arabic{assignmentno}}.\textcolor{blue}{\arabic{problemno}}} \hspace{0.2cm}\textit{#1}} \refstepcounter{problemno}\vspace{2pt}\\}
+
+%% some counters  
+\newcommand{\assignment}{\arabic{assignmentno}}
+
+%% solution  
+\newcommand{\solution}{\pagebreak[2]{\bf Solution:}\\}
+
+%% Hyperref Setup
+\hypersetup{pdftitle={Homework \assignment},
+	pdfsubject={\coursename},
+	pdfauthor={},
+	pdfcreator={},
+	pdfkeywords={Computer Architecture and Programming Languages},
+	%  pdfpagemode={FullScreen},
+	%colorlinks=true,
+	%bookmarks=true,
+	%hyperindex=true,
+	bookmarksopen=false,
+	bookmarksnumbered=true,
+	breaklinks=true,
+	%urlcolor=darkblue
+	urlbordercolor={0 0 0.7}
+}
+
+\begin{document}
+\coursename \hfill Course: \courseno\\
+Jacobs University Bremen \hfill \mytoday\\
+{Desar Mejdani}\hfill
+\vspace*{0.3cm}\\
+\begin{center}
+	{\Large \sheettitle{} {\assignment}\\}
+\end{center}
+
+\problem{}{0}
+\solution
+\begin{table}[!ht]
+	\begin{tabular}{|l|l|l|l|}
+		\hline
+		Language  & Generation & Function                               & Type Checking \\ \hline
+		C         & 3rd        & Imperative                             & Static        \\ \hline
+		C++       & 3rd        & Imperative, Object-Oriented            & Static        \\ \hline
+		B         & 3rd        & Imperative                             & Typeless      \\ \hline
+		Java      & 3rd        & Imperative, Object-Oriented            & Static        \\ \hline
+		Python    & 3rd        & Imperative, Object-Oriented, Scripting & Dynamic       \\ \hline
+		Ruby      & 3rd        & Imperative, Object-Oriented, Scripting & Dynamic       \\ \hline
+		Pascal    & 3rd        & Imperative                             & Static        \\ \hline
+		Basic     & 3rd        & Imperative                             & Dynamic       \\ \hline
+		Smalltalk & 4th        & Scripting, Object-Oriented             & Dynamic       \\ \hline
+		Perl      & 3rd        & Imperative, Object-Oriented, Scripting & Dynamic       \\ \hline
+		PHP       & 3rd        & Imperative, Object-Oriented, Scripting & Dynamic       \\ \hline
+		Prolog    & 5th        & Declarative                            & Dynamic       \\ \hline
+	\end{tabular}
+\end{table}
+
+\problem{}{0}
+\solution
+
+condition \textrightarrow variable == variable $\vert$ variable != variable $\vert$ variable $<$ variable $\vert$ variable $>$ variable $\vert$ variable $<=$ variable $\vert$ variable $>=$ variable \\
+
+
+expr \textrightarrow variable $\vert$ variable + variable $\vert$ variable - variable $\vert$ variable $*$ variable $\vert$ variable / variable\\
+
+
+variable \textrightarrow condition ? expr : expr;
+
+\problem{}{0}
+\solution
+
+wloop \textrightarrow while (expr) statement $\vert$ while (expr) statements\\
+\\
+rel \textrightarrow $==$ $\vert$ $>$ $\vert$ $<$ $\vert$ $>=$ $\vert$ $<=$ $\vert$ $!=$\\
+\\
+expr \textrightarrow identifier rel identifier $\vert$ identifier rel constant\\
+\\
+statements \textrightarrow statements statement $\vert$ $\epsilon$\\
+\\
+statement \textrightarrow wloop $\vert$ identifier = ex\\
+\\
+arithmetic \textrightarrow identifier $\vert$ constant $\vert$ (ex)\\
+\\
+term \textrightarrow term * arithmetic $\vert$ term / arithmetic $\vert$ arithmetic\\
+\\
+ex \textrightarrow ex +term $\vert$ ex - term $\vert$ term
+
+\end{document}
+

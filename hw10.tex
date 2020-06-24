@@ -1,0 +1,233 @@
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{hyperref}
+\usepackage[latin1]{inputenc}
+\usepackage[english]{babel}
+\usepackage{a4wide}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{ifthen}
+\usepackage{listings}
+% move the asterisk at the right position
+\lstset{basicstyle=\ttfamily,tabsize=4,literate={*}{${}^*{}$}1}
+%\lstset{language=C,basicstyle=\ttfamily}
+\usepackage{moreverb}
+\usepackage{palatino}
+\usepackage{multicol}
+\usepackage{tabularx}
+\usepackage{comment}
+\usepackage{verbatim}
+\usepackage{color}
+
+%% personal packages
+\usepackage[super]{nth}
+\usepackage{enumitem}
+\usepackage[nodayofweek]{datetime}
+\usepackage{circuitikz}
+\usepackage{karnaugh-map}
+\usepackage{textcomp}
+\renewcommand{\textrightarrow}{$\rightarrow$}
+
+%% new date format
+\newdateformat{mydate}{\twodigit{\THEDAY}{ }\shortmonthname[\THEMONTH], \THEYEAR}
+
+%% pdflatex?
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+\pdffalse % we are not running PDFLaTeX
+\else
+\pdfoutput=1 % we are running PDFLaTeX
+\pdftrue
+\fi
+\ifpdf
+\usepackage{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\parindent=0cm
+\parskip=0cm
+
+\setlength{\columnseprule}{0.4pt}
+\addtolength{\columnsep}{2pt}
+
+\addtolength{\textheight}{5.5cm}
+\addtolength{\topmargin}{-26mm}
+\pagestyle{empty}
+
+%%
+%% Sheet setup
+%% 
+\newcommand{\coursename}{Computer Architecture and Programming Languages}
+\newcommand{\courseno}{CO20-320241}
+
+\newcommand{\sheettitle}{Homework}
+\newcommand{\mytitle}{}
+\newcommand{\mytoday}{\today}
+
+
+% Current Assignment number
+\newcounter{assignmentno}
+\setcounter{assignmentno}{10}
+
+% Current Problem number, should always start at 1
+\newcounter{problemno}
+\setcounter{problemno}{1}
+
+%%
+%% problem and bonus environment
+%%
+\newcounter{probcalc}
+\newcommand{\problem}[2]{
+	\pagebreak[2]
+	\setcounter{probcalc}{#2}
+	~\\
+	{\large \textbf{Problem {\arabic{assignmentno}}.{\arabic{problemno}}} \hspace{0.2cm}\textit{#1}} \refstepcounter{problemno}\vspace{2pt}\\}
+
+\newcommand{\bonus}[2]{
+	\pagebreak[2]
+	\setcounter{probcalc}{#2}
+	~\\
+	{\large \textbf{Bonus Problem \textcolor{blue}{\arabic{assignmentno}}.\textcolor{blue}{\arabic{problemno}}} \hspace{0.2cm}\textit{#1}} \refstepcounter{problemno}\vspace{2pt}\\}
+
+%% some counters  
+\newcommand{\assignment}{\arabic{assignmentno}}
+
+%% solution  
+\newcommand{\solution}{\pagebreak[2]{\bf Solution:}\\}
+
+%% Hyperref Setup
+\hypersetup{pdftitle={Homework \assignment},
+	pdfsubject={\coursename},
+	pdfauthor={},
+	pdfcreator={},
+	pdfkeywords={Computer Architecture and Programming Languages},
+	%  pdfpagemode={FullScreen},
+	%colorlinks=true,
+	%bookmarks=true,
+	%hyperindex=true,
+	bookmarksopen=false,
+	bookmarksnumbered=true,
+	breaklinks=true,
+	%urlcolor=darkblue
+	urlbordercolor={0 0 0.7}
+}
+
+\begin{document}
+\coursename \hfill Course: \courseno\\
+Jacobs University Bremen \hfill \mytoday\\
+{Desar Mejdani}\hfill
+\vspace*{0.3cm}\\
+\begin{center}
+	{\Large \sheettitle{} {\assignment}\\}
+\end{center}
+
+\problem{}{0}
+\solution
+Depending on the instruction not all elements of the datapath are run every cycle, not all of the elements are needed. This is why control lines are necessary. For shared blocks in the datapath they select the correct output across all available inputs in the multiplexers, and, thus, deciding which block connects to which other block.
+
+
+\problem{}{0}
+\solution
+
+For the instructions like 'add' and 'addi' we do not need to write or read from memory, thus the Data Memory block is not needed. In addition the PC will always increment by 4 as there is not jump or branch instruction. Thus, only a simple adder is needed for this purpose with no MUX. The Instruction Memory block will fetch the instruction from memory for both instructions. The Register File block will read the values from the register/s and finally store the result after the addition into the destination register. The only control lines from the control unit are the ones for the Register File block, the MUX for the write address and the MUX before the ALU. \\
+
+RegDst is needed to decide which register is the destination register. For 'add' bits 15-11 contain the destination register, while for 'addi' bits 20-16 contain the destination register.\\
+
+RegWrite is needed to decide for the function fo the Register File block, either to read from register or write the result into the destination register.\\
+
+ALUSrc is needed to control one of the input of the summation. For 'addi' the value to be added comes from the Sign Extend block, since the immediate value is only 16 bits, it should get extended to 32. While, for 'add' the value to be added comes from the value in the second source register.\\
+
+Finally, the ALU can be replaced by a single adder as this is the only function it will perform. No control lines are needed.\\
+
+The datapath is shown in fig.\ref{fig:datapath_add_addi}.
+
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[scale=.5]{datapath_add_addi.png}
+	\caption{Datapath for 'add' and 'addi'}
+	\label{fig:datapath_add_addi}
+\end{figure}
+
+\newpage
+
+\problem{}{0}
+\solution
+\textbf{Note:} The process of updating the PC is considered to have the same latency as the Regs latency.\\
+\textbf{Note:} The process of writing back to the register is considered to have the same latency as the Regs latency of 250 ps, since this was not mention otherwise in the question or in the notes.\\
+\textbf{Note:} The abbreviations below are taken from the lecture notes - Lecture 16 \& 17 slide 69.
+
+\begin{enumerate}[label=(\alph*)]
+	\item There are 4 possible the ALU instruction can take: (below the totall latency is given for each path)
+	\begin{itemize}
+		\item 
+		I-Mem \textrightarrow RegF \textrightarrow ALU \textrightarrow Mux3 \textrightarrow WBack to RegF\\
+		Path latency = $(450 + 250 + 120 + 30 + 250)$ ps =  $1100$ ps
+		\item 
+		I-Mem \textrightarrow RegF \textrightarrow Mux2 \textrightarrow ALU \textrightarrow Mux3 \textrightarrow WBack to RegF\\
+		Path latency = $(450 + 250 + 30 + 120 + 30 + 250)$ pc = $1130$ ps
+		\item 
+		I-Mem \textrightarrow Mux1 \textrightarrow  RegF (Write address)\\
+		Path latency = $(450 + 30 + 250)$ ps = $730$ ps
+		\item 
+		Add \textrightarrow Mux \textrightarrow PCWrite (update PC)\\
+		Path latency = $(110 + 30 + 250)$ ps = $390$ ps
+	\end{itemize}
+	As one can see the longest path is the clock cycle time = 1130 ps
+	
+	\item Possible paths for 'sw':
+	\begin{itemize}
+		\item 
+		I-Mem \textrightarrow RegF \textrightarrow ALU \textrightarrow D-Mem\\
+		Path latency = (450 + 250 + 120 + 350) ps = 1170 ps
+		\item 
+		I-Mem \textrightarrow RegF \textrightarrow D-Mem\\
+		Path latency = (450 + 250 + 350) ps = 1050 ps
+		\item 
+		I-Mem \textrightarrow Sign-Extend \textrightarrow Mux2 \textrightarrow ALU \textrightarrow D-Mem\\
+		Path latency = (450 + 20 + 30 + 120 + 350) ps = 970 ps
+		\item 
+		Add \textrightarrow Mux4 \textrightarrow PCWrite (update PC)\\
+		Path latency = (110 + 30 + 250) ps = 390 ps
+	\end{itemize}
+	As one can see the longest path is the clock cycle time = 1170 ps
+	
+	\item Possible paths for 'beq':
+	\begin{itemize}
+		\item I-Mem \textrightarrow RegF \textrightarrow ALU \textrightarrow Mux4 \textrightarrow PCWrite\\
+		Path latency = (450 + 250 + 120 + 30 + 250) ps = 1100 ps
+		\item I-Mem \textrightarrow RegF \textrightarrow Mux2 \textrightarrow ALU \textrightarrow Mux4 \textrightarrow PCWrite\\
+		Path latency = (450 + 250 + 30 + 120 + 30 + 250) ps = 1130
+		\item I-Mem \textrightarrow Sign-Extend \textrightarrow Shift-left-2 \textrightarrow Add \textrightarrow Mux4 \textrightarrow PCWrite\\
+		Path latency = (450 + 20 + 0 + 110 + 30 + 250) ps = 860 ps
+		\item Add \textrightarrow Mux4 \textrightarrow PCWrite 
+		Path latency = (110 + 30 +250) ps = 390 ps
+	\end{itemize}
+	As one can see the longest path is the clock cycle time = 1130 ps
+	
+	Possible paths for 'lw':
+	\begin{itemize}
+		\item I-Mem \textrightarrow RegF \textrightarrow ALU \textrightarrow D-Mem \textrightarrow Mux3 \textrightarrow PCWrite\\
+		Path latency = (450 + 250 + 120 + 350 + 30 + 250) ps = 1450 ps
+		\item I-Mem \textrightarrow Mux1 \textrightarrow RegF\\
+		Path latency = (450 + 30 +250) ps = 730 ps
+		\item I-Mem \textrightarrow Sign-Extend \textrightarrow Mux2 \textrightarrow ALU \textrightarrow D-Mem \textrightarrow Mux3 \textrightarrow WBack to Regf
+		Path latency = (450 + 20 + 30 + 120 + 350 + 30 + 250) ps = 1250 ps
+		\item Add \textrightarrow Mux4 \textrightarrow PCWrite 
+		Path latency = (110 + 30 +250) ps = 390 ps
+	\end{itemize}
+	As one can see the longest path is the clock cycle time = 1450 ps
+	
+	
+	To support 'add', 'sw', 'lw', and 'beq' we should consider the longest latency of all of them. The latency of 'add' and 'sw' was already calculated in the two part above. Thus, the clock cycle time in this case is: 1450 ps.
+\end{enumerate}
+
+\end{document}
+

@@ -1,0 +1,226 @@
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{hyperref}
+\usepackage[latin1]{inputenc}
+\usepackage[english]{babel}
+\usepackage{a4wide}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{ifthen}
+\usepackage{listings}
+% move the asterisk at the right position
+\lstset{basicstyle=\ttfamily,tabsize=4,literate={*}{${}^*{}$}1}
+%\lstset{language=C,basicstyle=\ttfamily}
+\usepackage{moreverb}
+\usepackage{palatino}
+\usepackage{multicol}
+\usepackage{tabularx}
+\usepackage{comment}
+\usepackage{verbatim}
+\usepackage{color}
+
+%% personal packages
+\usepackage[super]{nth}
+\usepackage{enumitem}
+\usepackage[nodayofweek]{datetime}
+\usepackage{circuitikz}
+\usepackage{karnaugh-map}
+
+%% new date format
+\newdateformat{mydate}{\twodigit{\THEDAY}{ }\shortmonthname[\THEMONTH], \THEYEAR}
+
+%% pdflatex?
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+\pdffalse % we are not running PDFLaTeX
+\else
+\pdfoutput=1 % we are running PDFLaTeX
+\pdftrue
+\fi
+\ifpdf
+\usepackage{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\parindent=0cm
+\parskip=0cm
+
+\setlength{\columnseprule}{0.4pt}
+\addtolength{\columnsep}{2pt}
+
+\addtolength{\textheight}{5.5cm}
+\addtolength{\topmargin}{-26mm}
+\pagestyle{empty}
+
+%%
+%% Sheet setup
+%% 
+\newcommand{\coursename}{Computer Architecture and Programming Languages}
+\newcommand{\courseno}{CO20-320241}
+
+\newcommand{\sheettitle}{Homework}
+\newcommand{\mytitle}{}
+\newcommand{\mytoday}{\today}
+
+
+% Current Assignment number
+\newcounter{assignmentno}
+\setcounter{assignmentno}{8}
+
+% Current Problem number, should always start at 1
+\newcounter{problemno}
+\setcounter{problemno}{1}
+
+%%
+%% problem and bonus environment
+%%
+\newcounter{probcalc}
+\newcommand{\problem}[2]{
+	\pagebreak[2]
+	\setcounter{probcalc}{#2}
+	~\\
+	{\large \textbf{Problem {\arabic{assignmentno}}.{\arabic{problemno}}} \hspace{0.2cm}\textit{#1}} \refstepcounter{problemno}\vspace{2pt}\\}
+
+\newcommand{\bonus}[2]{
+	\pagebreak[2]
+	\setcounter{probcalc}{#2}
+	~\\
+	{\large \textbf{Bonus Problem \textcolor{blue}{\arabic{assignmentno}}.\textcolor{blue}{\arabic{problemno}}} \hspace{0.2cm}\textit{#1}} \refstepcounter{problemno}\vspace{2pt}\\}
+
+%% some counters  
+\newcommand{\assignment}{\arabic{assignmentno}}
+
+%% solution  
+\newcommand{\solution}{\pagebreak[2]{\bf Solution:}\\}
+
+%% Hyperref Setup
+\hypersetup{pdftitle={Homework \assignment},
+	pdfsubject={\coursename},
+	pdfauthor={},
+	pdfcreator={},
+	pdfkeywords={Computer Architecture and Programming Languages},
+	%  pdfpagemode={FullScreen},
+	%colorlinks=true,
+	%bookmarks=true,
+	%hyperindex=true,
+	bookmarksopen=false,
+	bookmarksnumbered=true,
+	breaklinks=true,
+	%urlcolor=darkblue
+	urlbordercolor={0 0 0.7}
+}
+
+\begin{document}
+\coursename \hfill Course: \courseno\\
+Jacobs University Bremen \hfill \mytoday\\
+{Desar Mejdani}\hfill
+\vspace*{0.3cm}\\
+\begin{center}
+	{\Large \sheettitle{} {\assignment}\\}
+\end{center}
+
+\problem{}{0}
+\solution
+\begin{enumerate}
+	\item 
+	$\frac{25}{32} = 25 / 2^5 = 0.11001$\\
+	Normalized: $1.1001 * 2^{-1}$\\
+	Sign bit: $0$\\
+	Exponent: $127 + (-1) = 126 = 01111110_2$\\
+	Fractional part: $10010000000000000000000$\\
+	IEEE 754 standard: $0\quad 01111110\quad 10010000000000000000000$\\
+	
+	\item 
+	$27.3515625$\\
+	$27 = 11011_2$\\
+	Keep multiplying the fractional part until it becomes 1.\\
+	$0.3515625 * 2 = 0.703125\quad 0$\\
+	$0.703125 * 2 = 1.40625\quad 1$\\
+	$0.40625 * 2 = 0.8125\quad 0$\\
+	$0.8125 * 2 = 1.625\quad 1$\\
+	$0.625 * 2 = 1.25\quad 1$\\
+	$0.25 * 2 = 0.5\quad 0$\\
+	$0.5 * 2 = 1\quad 1$\\
+	$\implies 0.3515625 = 0.0101101_2$\\
+	$\implies 27.3515625 = 11011.0101101_2$\\
+	Normalized: $1.10110101101_2 * 2^4$\\
+	Sign bit: $0$\\
+	Exponent: $127 + 4 = 131 = 10000011_2$\\
+	Fractional part: $10110101101000000000000$\\
+	IEEE 754 standard: $0\quad 10000011\quad 10110101101000000000000$
+\end{enumerate}
+
+\problem{}{0}
+\solution
+
+\begin{enumerate}
+	\item True
+	\item False
+	\item False
+	\item False
+	\item False
+\end{enumerate}
+
+
+\problem{}{0}
+\solution
+
+\begin{verbatim}
+000000 10000 10101 01011 00000 100000
+
+#--------------- MIPS Instruction ---------------
+
+add $t3, $s0, $s5
+
+\end{verbatim}
+
+
+\problem{}{0}
+\solution
+\begin{enumerate}[label=(\alph*)]
+	\item 26 bits can be used for destination address.
+	\item This can be done using 'jr' instruction which jumps to the address of the register. This register contains a 32 bit address, meaning one can jump to any address.
+\end{enumerate}
+
+
+\problem{}{0}
+\solution
+
+We can compare the rendering time by calculating the CPU time for both cases with the following formula:
+$$\text{CPU time} = \frac{\text{Instraction Count} * \text{CPI}}{\text{Clock rate}}$$\\
+
+
+For computer P1:\\
+$$\text{cpu time P1} = \frac{\Sigma_{i=0}^4 \text{CPI}_i * \text{freq}_i}{\text{Clock rate}}$$
+$$= \frac{1 * 0.6 + 2* 0.1  + 3 * 0.1 + 4 * 0.1 + 3 * 0.1}{4 * 10^9}\quad [s] = 4.5 * 10^{-10}\quad s$$
+
+For computer P2:\\
+$$\text{cpu time P1} = \frac{\Sigma_{i=0}^4 \text{CPI}_i * \text{freq}_i}{\text{Clock rate}}$$
+$$= \frac{2 * 0.6 + 2* 0.1  + 2 * 0.1 + 4 * 0.1 + 4 * 0.1}{6 * 10^9}\quad [s] = 4.0 * 10^{-10}\quad [s]$$
+
+
+Clearly the computer P2 will finish rendering the picture faster by $4.5 / 4.0 = 1.125$ times faster.
+
+
+\problem{}{0}
+\solution
+
+We need to calculate the cpu time as above. The formula is the same as the one used in the problem before. In this case we have to multiply each Class by 1 except from class A which should be multiplied by 2, and dividing the result by 6.
+
+For computer P1:\\
+$$\text{cpu time P1} = \frac{1}{6}\cdot \frac{2*1 + 1*3 + 1*3 + 1*4 + 1*2}{2*10^9} \quad [s] \approxeq 1.167 * 10^{-9}\quad [s]$$
+
+For computer P2:\\
+$$\text{cpu time P1} = \frac{1}{6}\cdot \frac{2*2 + 1*3 + 1*2 + 1*3 + 1*3}{4*10^9} \quad [s] \approxeq 6.25 * 10^{-10}\quad [s]$$
+
+P2 is $1.167 / 0.625 = 1.867$ times faster than P1.
+
+\end{document}
+

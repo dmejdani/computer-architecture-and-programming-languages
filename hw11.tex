@@ -1,0 +1,227 @@
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{hyperref}
+\usepackage[latin1]{inputenc}
+\usepackage[english]{babel}
+\usepackage{a4wide}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{ifthen}
+\usepackage{listings}
+% move the asterisk at the right position
+\lstset{basicstyle=\ttfamily,tabsize=4,literate={*}{${}^*{}$}1}
+%\lstset{language=C,basicstyle=\ttfamily}
+\usepackage{moreverb}
+\usepackage{palatino}
+\usepackage{multicol}
+\usepackage{tabularx}
+\usepackage{comment}
+\usepackage{verbatim}
+\usepackage{color}
+
+%% personal packages
+\usepackage[super]{nth}
+\usepackage{enumitem}
+\usepackage[nodayofweek]{datetime}
+\usepackage{circuitikz}
+\usepackage{karnaugh-map}
+\usepackage{textcomp}
+\renewcommand{\textrightarrow}{$\rightarrow$}
+
+%% new date format
+\newdateformat{mydate}{\twodigit{\THEDAY}{ }\shortmonthname[\THEMONTH], \THEYEAR}
+
+%% pdflatex?
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+\pdffalse % we are not running PDFLaTeX
+\else
+\pdfoutput=1 % we are running PDFLaTeX
+\pdftrue
+\fi
+\ifpdf
+\usepackage{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\parindent=0cm
+\parskip=0cm
+
+\setlength{\columnseprule}{0.4pt}
+\addtolength{\columnsep}{2pt}
+
+\addtolength{\textheight}{5.5cm}
+\addtolength{\topmargin}{-26mm}
+\pagestyle{empty}
+
+%%
+%% Sheet setup
+%% 
+\newcommand{\coursename}{Computer Architecture and Programming Languages}
+\newcommand{\courseno}{CO20-320241}
+
+\newcommand{\sheettitle}{Homework}
+\newcommand{\mytitle}{}
+\newcommand{\mytoday}{\today}
+
+
+% Current Assignment number
+\newcounter{assignmentno}
+\setcounter{assignmentno}{11}
+
+% Current Problem number, should always start at 1
+\newcounter{problemno}
+\setcounter{problemno}{1}
+
+%%
+%% problem and bonus environment
+%%
+\newcounter{probcalc}
+\newcommand{\problem}[2]{
+	\pagebreak[2]
+	\setcounter{probcalc}{#2}
+	~\\
+	{\large \textbf{Problem {\arabic{assignmentno}}.{\arabic{problemno}}} \hspace{0.2cm}\textit{#1}} \refstepcounter{problemno}\vspace{2pt}\\}
+
+\newcommand{\bonus}[2]{
+	\pagebreak[2]
+	\setcounter{probcalc}{#2}
+	~\\
+	{\large \textbf{Bonus Problem \textcolor{blue}{\arabic{assignmentno}}.\textcolor{blue}{\arabic{problemno}}} \hspace{0.2cm}\textit{#1}} \refstepcounter{problemno}\vspace{2pt}\\}
+
+%% some counters  
+\newcommand{\assignment}{\arabic{assignmentno}}
+
+%% solution  
+\newcommand{\solution}{\pagebreak[2]{\bf Solution:}\\}
+
+%% Hyperref Setup
+\hypersetup{pdftitle={Homework \assignment},
+	pdfsubject={\coursename},
+	pdfauthor={},
+	pdfcreator={},
+	pdfkeywords={Computer Architecture and Programming Languages},
+	%  pdfpagemode={FullScreen},
+	%colorlinks=true,
+	%bookmarks=true,
+	%hyperindex=true,
+	bookmarksopen=false,
+	bookmarksnumbered=true,
+	breaklinks=true,
+	%urlcolor=darkblue
+	urlbordercolor={0 0 0.7}
+}
+
+\begin{document}
+\coursename \hfill Course: \courseno\\
+Jacobs University Bremen \hfill \mytoday\\
+{Desar Mejdani}\hfill
+\vspace*{0.3cm}\\
+\begin{center}
+	{\Large \sheettitle{} {\assignment}\\}
+\end{center}
+
+\problem{}{0}
+\solution
+
+Program = 2 load instructions + 1 store instruction + 3 R-format instructions + 1 branching instruction.\\
+
+\begin{figure}[!ht]
+	\centering
+	\includegraphics[scale=.5]{data_1.png}
+%	\caption{}
+%	\label{fig:datapath_add_addi}
+\end{figure}
+
+\begin{enumerate}[label=(\alph*)]
+	\item Multi-cycle approach compared to single cycle approach.
+	
+	For single cycle approach, every instruction will have the same eventually the same execution time because the clock-cycle time will be set according to the instruction which takes the most amount of time, in this case the 'lw' instruction. Thus, for single cycle approach the execution time for our program is:
+	$$\text{execution time} = (2 + 1 + 3 + 1) * 800 ps = 5600 ps  $$
+	
+	
+	For the multi-cycle approach there are multiple steps for each instruction. The longest step of these instructions is the one which defines the clock-cycle time, which in our case is 200 ps. 'lw' instruction contains 5 steps, 'sw' instruction contains 4 steps, R-format instructions contain 4 steps, 'beq' instruction contains 3 steps. Thus, one can write the formula to calculate the final execution time of the program as follows:
+	$$\text{execution time} = (2 * 5  + 1 * 4 + 3 * 4 + 1 * 3 ) * 200 ps = 5800 ps$$
+	
+	In this case the single cycle approach executes faster by: $5800 * 100\% / 5600 - 100\% \approx 3.6\%$.
+	
+	\item Pipelined approach compared to single cycle approach
+	
+	For the pipelined more than one instruction is executed at a time. However, the execution time for the corresponding step is set as in the multi-cycle approach, namely the longest step of all instructions. So, in this case it is 200 ps. The execution time can be calculated with the following formula:
+	$$\text{execution time} = (5*200 + (n_i-1) * 200) ps = (1000 + (7 - 1) * 200) ps = 2200 ps$$
+	, where $n_i$ is the number of instructions in the program. \\
+	
+	There are a few assumption with the formula above. It is assumed there are no structural, data, or control hazards in this implementation corresponding to our program. In addition the exact time of execution might change for different orders of execution of instructions. In the formula above it is assumed that the last instruction of the pipeline approach contains 5 steps.\\
+	
+	Comparing to the single cycle approach, calculated in the earlier part, the pipeline approach is faster by: $$5600 * 100\% / 2200 - 100\% \approx 155 \%$$
+	
+	\item Pipelined approach compared to multi-cycle approach
+
+	The execution times were calculated earlier.	
+	The pipeline approach is faster in execution time than the multi-cycle one by:
+	$$5800 * 100\%/ 2200 - 100\% \approx 164\%$$
+	
+	
+\end{enumerate}
+
+\problem{}{0}
+\solution
+\begin{enumerate}[label=(\alph*)]
+	\item 
+	\begin{verbatim}
+		\$zero
+	\end{verbatim}
+	\item 
+	\begin{verbatim}
+		a[a-zA-z0-9]*b
+	\end{verbatim}
+	\item 
+	\begin{verbatim}
+		[0-9][a-zA-Z0-9_]*[0-9]
+	\end{verbatim}
+	\item 
+	\begin{verbatim}
+		abba{4}[ab]{0,3}
+	\end{verbatim}
+	\item 
+	\textbf{Note:} Does not match the zeros in front of the integer.
+	\begin{verbatim}
+		[1-9][0-9]*
+	\end{verbatim}
+	
+	\item 
+	\textbf{Note:} Does not match the zeros in front of the integer, and the integer may start with a '+' or '-'.
+	\begin{verbatim}
+		[+-][1-9][0-9]*
+	\end{verbatim}
+	
+	\item 
+	\textbf{Note:} Does not match the zeros in front of the floating number.
+	\begin{verbatim}
+		[1-9][0-9]*\.[0-9]*
+	\end{verbatim}
+	
+	\item 
+	\begin{verbatim}
+		[a-z]*p[a-z ]t[a-z]*
+	\end{verbatim}
+\end{enumerate}
+
+\problem{}{0}
+\solution
+\begin{enumerate}[label=(\alph*)]
+	\item 1, 3
+	\item 1, 2, 3, 4, 6
+	\item 3, 4, 5
+	\item 1, 3, 5
+\end{enumerate}
+
+\end{document}
+

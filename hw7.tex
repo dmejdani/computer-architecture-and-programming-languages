@@ -1,0 +1,284 @@
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{hyperref}
+\usepackage[latin1]{inputenc}
+\usepackage[english]{babel}
+\usepackage{a4wide}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{ifthen}
+\usepackage{listings}
+% move the asterisk at the right position
+\lstset{basicstyle=\ttfamily,tabsize=4,literate={*}{${}^*{}$}1}
+%\lstset{language=C,basicstyle=\ttfamily}
+\usepackage{moreverb}
+\usepackage{palatino}
+\usepackage{multicol}
+\usepackage{tabularx}
+\usepackage{comment}
+\usepackage{verbatim}
+\usepackage{color}
+
+%% personal packages
+\usepackage[super]{nth}
+\usepackage{enumitem}
+\usepackage[nodayofweek]{datetime}
+\usepackage{circuitikz}
+\usepackage{karnaugh-map}
+
+%% new date format
+\newdateformat{mydate}{\twodigit{\THEDAY}{ }\shortmonthname[\THEMONTH], \THEYEAR}
+
+%% pdflatex?
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+\pdffalse % we are not running PDFLaTeX
+\else
+\pdfoutput=1 % we are running PDFLaTeX
+\pdftrue
+\fi
+\ifpdf
+\usepackage{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\parindent=0cm
+\parskip=0cm
+
+\setlength{\columnseprule}{0.4pt}
+\addtolength{\columnsep}{2pt}
+
+\addtolength{\textheight}{5.5cm}
+\addtolength{\topmargin}{-26mm}
+\pagestyle{empty}
+
+%%
+%% Sheet setup
+%% 
+\newcommand{\coursename}{Computer Architecture and Programming Languages}
+\newcommand{\courseno}{CO20-320241}
+
+\newcommand{\sheettitle}{Homework}
+\newcommand{\mytitle}{}
+\newcommand{\mytoday}{\today}
+
+
+% Current Assignment number
+\newcounter{assignmentno}
+\setcounter{assignmentno}{7}
+
+% Current Problem number, should always start at 1
+\newcounter{problemno}
+\setcounter{problemno}{1}
+
+%%
+%% problem and bonus environment
+%%
+\newcounter{probcalc}
+\newcommand{\problem}[2]{
+	\pagebreak[2]
+	\setcounter{probcalc}{#2}
+	~\\
+	{\large \textbf{Problem {\arabic{assignmentno}}.{\arabic{problemno}}} \hspace{0.2cm}\textit{#1}} \refstepcounter{problemno}\vspace{2pt}\\}
+
+\newcommand{\bonus}[2]{
+	\pagebreak[2]
+	\setcounter{probcalc}{#2}
+	~\\
+	{\large \textbf{Bonus Problem \textcolor{blue}{\arabic{assignmentno}}.\textcolor{blue}{\arabic{problemno}}} \hspace{0.2cm}\textit{#1}} \refstepcounter{problemno}\vspace{2pt}\\}
+
+%% some counters  
+\newcommand{\assignment}{\arabic{assignmentno}}
+
+%% solution  
+\newcommand{\solution}{\pagebreak[2]{\bf Solution:}\\}
+
+%% Hyperref Setup
+\hypersetup{pdftitle={Homework \assignment},
+	pdfsubject={\coursename},
+	pdfauthor={},
+	pdfcreator={},
+	pdfkeywords={Computer Architecture and Programming Languages},
+	%  pdfpagemode={FullScreen},
+	%colorlinks=true,
+	%bookmarks=true,
+	%hyperindex=true,
+	bookmarksopen=false,
+	bookmarksnumbered=true,
+	breaklinks=true,
+	%urlcolor=darkblue
+	urlbordercolor={0 0 0.7}
+}
+
+\begin{document}
+\coursename \hfill Course: \courseno\\
+Jacobs University Bremen \hfill \mytoday\\
+{Desar Mejdani}\hfill
+\vspace*{0.3cm}\\
+\begin{center}
+	{\Large \sheettitle{} {\assignment}\\}
+\end{center}
+
+\problem{}{0}
+\solution
+\begin{verbatim}
+my_function:
+    slti $t0, $a0, 11      # test if x < 11
+    bne $t0, $zero, ELSE   # goto ELSE if x < 11
+    sub $v0, $a0, $a1      # x - y
+    jr $ra                 # jump back to calling routine
+
+ELSE:
+    add $v0, $a0, $a1      # x + y
+    jr $ra                 # jump back to calling routine
+
+\end{verbatim}
+
+
+\problem{}{0}
+\solution
+\begin{verbatim}
+is_more_than_fifty:
+    addi $sp, $sp, -4      # decrementing stack pointer
+    sw $ra, 0($sp )        # storing return address in the stack
+    jal prod               # jump and link to prod
+    lw $ra, 0($sp)         # restoring the return address
+    addi $sp, $sp, 4       # incrementing stack pointer
+    slti $t0, $v0, 51      # comparing if smaller than 51
+    bne $t0, $zero, ELSE   # if smaller than 51 goto ELSE
+    addi $v0, $zero, 1     # set return value to 1
+    jr $ra                 # return to caller
+
+prod:
+    mul $v0, $a0, $a1      # a * b
+    jr $ra                 # return to caller
+
+ELSE:
+    add $v0, $zero, $zero  # set return value to 0
+    jr $ra                 # return to caller
+\end{verbatim}
+
+
+\problem{}{0}
+\solution
+
+
+\begin{verbatim}
+Loop: sll $t1, $s3, 2     # index multiplied by 4, (4bytes)
+      add $t1, $t1, $s6   # adding the base address of A
+      lw $t0, 0($t1)      # loading A[i]
+      beq $t0, $s5, Exit  # comparing with -1 and branching if equal
+      addi $s3, $s3, 1    # incrementing index
+      j Loop
+Exit:
+
+//======== C Code ==========
+
+// int i = 0;  // assumed that i is zero at the beginning of the loop
+while(A[i] != -1)
+{
+i++;
+}
+\end{verbatim}
+
+\newpage
+\begin{verbatim}
+
+\end{verbatim}
+\problem{}{0}
+\solution
+
+All the machine code for the following MIPS instructions are taken from the following table fig.\ref{fig:circuit}, found in the lecture slides.
+
+ \begin{figure}[!ht]
+	\centering
+	\includegraphics[scale=.5]{table.png}
+	\caption{Reference table for MIPS introductions}
+	\label{fig:circuit}
+\end{figure}
+
+The register numbers are taken from the table below, also found in the slides, fig.\ref{fig:circuit2}.
+
+ \begin{figure}[!ht]
+	\centering
+	\includegraphics[scale=.5]{table2.png}
+	\caption{Reference table for register numbers}
+	\label{fig:circuit2}
+\end{figure}
+
+Each instruction address differs from the one before or after by 4 bytes in its address (shown in the PC column).
+
+For the branching instruction, the destination, if branching happens, should be at address 60024. We know that the destination is calculated with the following formula: 
+$$\text{destination = PC + 4 + word address}$$
+$$\implies \text{word address = destination - PC - 4}$$
+
+Thus, the result is: $60024 - 60012 - 4 = 8$. We know that this is a word address, thus we have to divide by 4 bytes / word, we get two words. This, value is shown in the machine language code in the table below.
+
+For the jump statement the address is a byte address. Thus, to jump back to 'LOOP' the jump address has to be 60000 / 4 = 15000.
+
+
+\begin{table}[!htbp]
+	\scalebox{0.84}{
+	\begin{tabular}{|c|l|c|c|c|c|c|c|c|c|c|c|c|c|}
+		\hline
+		PC    & \multicolumn{1}{c|}{MIPS} & \multicolumn{6}{c|}{Machine Language (decimal)}   & \multicolumn{6}{c|}{Machine Language (binary)}                 \\ \hline
+		60000 & Loop: sll \$t1, \$s3, 2     & 0      & 0      & 19     & 9      & 2     & 0     & 000000 & 00000 & 10011 & 01001      & 00010      & 000000      \\ \hline
+		60004 & add \$t1, \$t1, \$s6        & 0      & 9      & 22     & 9      & 0     & 32    & 000000 & 01001 & 10110 & 01001      & 00000      & 100000      \\ \hline
+		60008 & lw \$t0, 0(\$t1)            & 35     & 9      & 8      & \multicolumn{3}{c|}{0} & 100011 & 01001 & 01000 & \multicolumn{3}{c|}{0000000000000000} \\ \hline
+		60012 & beq \$t0, \$s5, Exit        & 4      & 8      & 21     & \multicolumn{3}{c|}{2} & 000100 & 01000 & 10101 & \multicolumn{3}{c|}{0000000000000010} \\ \hline
+		60016 & addi \$s3, \$s3, 1          & 8      & 19     & 19     & \multicolumn{3}{c|}{1} & 001000 & 10011 & 10011 & \multicolumn{3}{c|}{0000000000000001} \\ \hline
+		60020 & j Loop                    & 2      & \multicolumn{5}{c|}{15000}               & 000010 & \multicolumn{5}{c|}{00000000000011101010011000}       \\ \hline
+		60024 & Exit:                     & \multicolumn{6}{l|}{}                             & \multicolumn{6}{l|}{}                                          \\ \hline
+	\end{tabular}
+	}
+\end{table}{\tiny }
+
+\newpage
+
+\problem{}{0}
+\solution
+Hexadecimal to binary and decimal.
+\begin{verbatim}
+0x0C000000 = 0000 1100 0000 0000 0000 0000 0000 0000 = 201326592
+
+0xC4630000 = 1100 0100 0110 0011 0000 0000 0000 0000 = 3294822400
+\end{verbatim}
+
+\begin{enumerate}[label=(\alph*)]
+\item Two's complement:
+	\begin{enumerate}
+	\item Since the first digit of the binary representation of the first bit pattern is 0, the number is positive. So the number is: $201326592_10$.
+	\item Since the first digit of the binary representation of the first bit pattern is 1, the number is negative. The bits need to be flipped and added with 1: $0011 1011 1001 1100 1111 1111 1111 1111 + 1 = - 0011 1011 1001 1101 0000 0000 0000 0000 = - 1000144896_{10}$. 
+	\end{enumerate}
+
+
+\item Unsigned integer: We will need to just convert the number from binary to decimal.
+	\begin{enumerate}
+	\item $2^{26} + 2^{27} = 201326592_{10}$
+	\item $2^31 + 2^30 + 2^26 + 2^21 + 2^22 + 2^17 + 2^16 = 3294822400_{10}$
+	\end{enumerate}
+
+\item MIPS instruction:
+	\begin{enumerate}
+	\item The first 6 bits from the op code of the instruction, which is 3. This is the op code of 'jal' instruction. Everything else, the address, is 0. Thus the instruction is:\\
+	\begin{verbatim}
+	jal 0
+	\end{verbatim}
+	
+	\item The first 6 bits form the op code of the instruction, which is 49. This is the op code of 'lwc1' instruction. The registers are registers 3 (\$v3), and the offset is 0. Thus the instruction is:
+	\begin{verbatim}
+	lwc1 $v1, 0($v1)
+	\end{verbatim}
+	\end{enumerate}
+\end{enumerate}
+
+	
+\end{document}
+

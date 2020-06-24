@@ -1,0 +1,467 @@
+\documentclass[a4paper]{article}
+\usepackage[pdftex]{hyperref}
+\usepackage[latin1]{inputenc}
+\usepackage[english]{babel}
+\usepackage{a4wide}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{ifthen}
+\usepackage{listings}
+% move the asterisk at the right position
+\lstset{basicstyle=\ttfamily,tabsize=4,literate={*}{${}^*{}$}1}
+%\lstset{language=C,basicstyle=\ttfamily}
+\usepackage{moreverb}
+\usepackage{palatino}
+\usepackage{multicol}
+\usepackage{tabularx}
+\usepackage{comment}
+\usepackage{verbatim}
+\usepackage{color}
+
+%% personal packages
+\usepackage[super]{nth}
+\usepackage{enumitem}
+\usepackage[nodayofweek]{datetime}
+\usepackage{circuitikz}
+\usepackage{karnaugh-map}
+
+%% new date format
+\newdateformat{mydate}{\twodigit{\THEDAY}{ }\shortmonthname[\THEMONTH], \THEYEAR}
+
+%% pdflatex?
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+\pdffalse % we are not running PDFLaTeX
+\else
+\pdfoutput=1 % we are running PDFLaTeX
+\pdftrue
+\fi
+\ifpdf
+\usepackage{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\parindent=0cm
+\parskip=0cm
+
+\setlength{\columnseprule}{0.4pt}
+\addtolength{\columnsep}{2pt}
+
+\addtolength{\textheight}{5.5cm}
+\addtolength{\topmargin}{-26mm}
+\pagestyle{empty}
+
+%%
+%% Sheet setup
+%% 
+\newcommand{\coursename}{Computer Architecture and Programming Languages}
+\newcommand{\courseno}{CO20-320241}
+ 
+\newcommand{\sheettitle}{Homework}
+\newcommand{\mytitle}{}
+\newcommand{\mytoday}{\today}
+
+
+% Current Assignment number
+\newcounter{assignmentno}
+\setcounter{assignmentno}{2}
+
+% Current Problem number, should always start at 1
+\newcounter{problemno}
+\setcounter{problemno}{1}
+
+%%
+%% problem and bonus environment
+%%
+\newcounter{probcalc}
+\newcommand{\problem}[2]{
+  \pagebreak[2]
+  \setcounter{probcalc}{#2}
+  ~\\
+  {\large \textbf{Problem {\arabic{assignmentno}}.{\arabic{problemno}}} \hspace{0.2cm}\textit{#1}} \refstepcounter{problemno}\vspace{2pt}\\}
+
+\newcommand{\bonus}[2]{
+  \pagebreak[2]
+  \setcounter{probcalc}{#2}
+  ~\\
+  {\large \textbf{Bonus Problem \textcolor{blue}{\arabic{assignmentno}}.\textcolor{blue}{\arabic{problemno}}} \hspace{0.2cm}\textit{#1}} \refstepcounter{problemno}\vspace{2pt}\\}
+
+%% some counters  
+\newcommand{\assignment}{\arabic{assignmentno}}
+
+%% solution  
+\newcommand{\solution}{\pagebreak[2]{\bf Solution:}\\}
+
+%% Hyperref Setup
+\hypersetup{pdftitle={Homework \assignment},
+  pdfsubject={\coursename},
+  pdfauthor={},
+  pdfcreator={},
+  pdfkeywords={Computer Architecture and Programming Languages},
+  %  pdfpagemode={FullScreen},
+  %colorlinks=true,
+  %bookmarks=true,
+  %hyperindex=true,
+  bookmarksopen=false,
+  bookmarksnumbered=true,
+  breaklinks=true,
+  %urlcolor=darkblue
+  urlbordercolor={0 0 0.7}
+}
+
+\begin{document}
+\coursename \hfill Course: \courseno\\
+Jacobs University Bremen \hfill \mytoday\\
+{Desar Mejdani}\hfill
+\vspace*{0.3cm}\\
+\begin{center}
+{\Large \sheettitle{} {\assignment}\\}
+\end{center}
+
+\textbf{Note:} Every number which is missing its base in this homework it is meant as a number in base 10.
+
+\problem{}{0}
+\solution
+\begin{enumerate}[label=(\alph*)]
+	\item $777_8 + 1 = 1000_8$
+	\item $888_{16} + 1 = 889_{16}$
+	\item $32007_8 + 1 = 32010_8$
+	\item $32108_{16} + 1 = 32109_{16}$
+	\item $8BFF_{16} + 1 = 8C00_{16}$
+	\item $1219_{16} + 1 = 121A_{16}$
+\end{enumerate}
+
+
+\problem{}{0}
+\solution
+\begin{enumerate}[label=(\alph*)]
+	\item $\mathrm{x} = \overline{\mathrm{A}\cdot \mathrm{B}\cdot (\mathrm{C}+\mathrm{D})}$
+	
+	\begin{circuitikz}
+		\draw
+		(0,2) node[and port] (myand1) {}
+		(0,0) node[or port] (myor1) {}
+		(2,1) node[and port] (myand2) {}
+		(3,1) node[not port] (mynot1) {}
+		(myand1.in 1) node[left]{A}
+		(myand1.in 2) node[left]{B}
+		(myor1.in 1) node[left]{C}
+		(myor1.in 2) node[left]{D}
+		(myand1.out) -- (myand2.in 1)
+		(myor1.out) -- (myand2.in 2)
+		(myand2.out) -- (mynot1.in)
+		
+		(mynot1.out) node[right] {x}
+		;
+	\end{circuitikz}
+
+	\item $\mathrm{x = \overline{A + B + \overline{C} \cdot D \cdot \overline{E}} + \overline{B} \cdot C\cdot \overline{D}}  $
+	\\
+	\\
+	\begin{circuitikz}
+		\draw
+		(0,2) node[or port] (abor) {}
+		(-.5,0) node[not port] (cnot) {}
+		(2,-1) node[and port] (ncdand) {}
+		(4,-2) node[and port] (neand) {}
+		(-.5,-2.3) node[not port] (enot) {}
+		(-.5, -4.3) node[not port] (dnot) {}
+		(6,0) node[or port] (myor1) {}
+		(1,3) node[not port] (bnot) {}
+		(8.5,1.5) node[and port] (myand1) {}
+		(6.5,3.28) node[and port] (myand2) {}
+		(10.5,0.28) node[or port] (lastor) {}
+		
+		(abor.in 1) node[left] (A)  [anchor=east,xshift=-1cm] {A}
+		(abor.in 2) node[left] (B)  [anchor=east,xshift=-1cm] {B}
+		(cnot.in) node[left] (C)  [anchor=east,xshift=-1cm] {C}
+		(ncdand.in 2) node[left](D)  [anchor=east,xshift=-2.8cm] {D}
+		(enot.in) node[left](E)  [anchor=east,xshift=-1cm] {E}
+		(lastor.out) node[right](Output) {x}
+		
+		(abor.in 1) -- (A)
+		(abor.in 2) -- (B)
+		(cnot.in) -- (C)
+		(ncdand.in 2) -- (D)
+		(enot.in) -- (E)
+		(-2, 3) -| (bnot.in)
+		(-2, 3) to[short, -*] (-2,1.72)
+		(-1.7, 4) -| (myand2.in 1)
+		(-1.7, 4) to[short, -*] (-1.7,0)
+		(-1.7,-4.3) -| (dnot.in)
+		(-1.7,-4.3) to[short, -*] (-1.7, -1.3)
+		(bnot.out) -- (myand2.in 2)
+		(myand2.out) -| (myand1.in 1)
+		(dnot.out) -| (myand1.in 2)
+		(myor1.out) -- (lastor.in 2)
+		(myand1.out) -| (lastor.in 1)
+		
+		
+		
+		
+		(cnot.out) -| (ncdand.in 1)
+		(ncdand.out) |- (neand.in 1)
+		(enot.out) -- (neand.in 2)
+		(abor.out) -| (myor1.in 1)
+		(neand.out) -| (myor1.in 2)
+	
+		;
+		
+	\end{circuitikz}
+	\newpage
+	
+	\item 
+	$\mathrm{x = \overline{W+P\cdot \overline{Q}}}$
+	
+	\begin{circuitikz}
+		\draw
+		
+		(0,0) node[not port] (qnot) {}
+		(5,2) node[or port] (myor) {}
+		(3,1) node[and port] (myand) {}
+		(7,2) node[not port] (lastnot) {}
+		
+		(myor.in 1) node[left] (W)  [anchor=east,xshift=-5cm] {W}
+		(myand.in 1) node[left] (P) [anchor=east,xshift=-3cm] {P}
+		(qnot.in) node[left] (Q) [anchor=east, xshift=-.6cm] {Q}
+		(lastnot.out) node[right] () {x}		
+		(W) -- (myor.in 1)
+		(P) -- (myand.in 1)
+		(Q) -- (qnot.in)
+		
+		(qnot.out) -| (myand.in 2)
+		(myand.out) -| (myor.in 2)
+		(myor.out) -- (lastnot.in)
+		
+		;
+	\end{circuitikz}
+
+	\item 
+	$\mathrm{x=(A+B)\cdot (\overline{A}+\overline{B})}$
+	
+	\begin{circuitikz}
+		\draw
+		(0,0) node[or port] (myor1) {}
+		(1,3) node[not port] (mynot1) {}
+		(1,1) node[not port] (mynot2) {}
+		(4,2) node[or port] (myor2) {}
+		(6,.28) node[and port] (myand) {}
+		
+		(myor1.in 1) node[left] (A) [xshift=-1cm] {A}
+		(myor1.in 2) node[left] (B) [xshift=-1cm] {B}
+		(myand.out) node[right] {x}
+		
+		(A) -- (myor1.in 1)
+		(B) -- (myor1.in 2)
+		
+		(-2,3) -- (mynot1.in)
+		(-2,3) to[short, -*] (-2,.28)
+		(-1.5,1) -- (mynot2.in)
+		(-1.5,1) to[short, -*] (-1.5, -.28)
+		
+		(myor1.out) -- (myand.in 2)
+		(mynot1.out) -| (myor2.in 1)
+		(mynot2.out) -| (myor2.in 2)
+		(myor2.out) -| (myand.in 1)
+		
+		
+		;
+	\end{circuitikz}
+	
+\end{enumerate}
+
+\problem{}{0}
+\solution
+\begin{itemize}
+	\item Truth table
+	
+	\begin{table}[!ht]
+		\centering
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			M & N & Q & X      \\ \hline
+			0 & 0 & 0 & 0      \\ \hline
+			0 & 0 & 1 & 0      \\ \hline
+			0 & 1 & 0 & 0      \\ \hline
+			0 & 1 & 1 & 1      \\ \hline
+			1 & 0 & 0 & 0      \\ \hline
+			1 & 0 & 1 & 1      \\ \hline
+			1 & 1 & 0 & 0      \\ \hline
+			1 & 1 & 1 & 1      \\ \hline
+		\end{tabular}
+	\end{table}
+\item Sum of products expression: $\mathrm{x=\overline{M}NQ + M\overline{N}Q + MNQ}$
+\item Simplification:
+$\mathrm{x=\overline{M}NQ + M\overline{N}Q + MNQ}$\\
+\begin{align*}
+&\implies \mathrm{Q(\overline{M}N + M\overline{N}+ MN)}\,\, \text{{Distributive Rule}}\\
+&\implies \mathrm{Q(\overline{M}N + M\overline{N}+ MN)}\,\, \text{{Distributive Rule}}\\
+&\implies \mathrm{Q(\overline{M}N + M(\overline{N}+N))}\,\, \text{Distributive Rule}\\
+&\implies \mathrm{Q(\overline{M}N+M)}\,\, \text{Complement Rule}\\
+&\implies \mathrm{Q((M+\overline{M})(M+N))}\,\, \text{Distributive Rule}\\
+&\implies \mathrm{Q(M+N)}\,\, \text{Complement Rule}\\
+&\implies \mathrm{QM+QN}\,\, \text{Distributive Rule}\\
+\end{align*}
+
+\end{itemize}
+\newpage
+
+\problem{}{0}
+\solution
+\begin{enumerate}[label=(\alph*)]
+	\item $\mathrm{X+\overline{X} \cdot Y = X + Y}$
+	\begin{itemize}
+		\item	$\mathrm{LeftSide = X+\overline{X} \cdot Y}$
+		\begin{table}[!ht]
+			\centering
+			\begin{tabular}{|c|c|c|c|}
+				\hline
+				X & Y & $\mathrm{\overline{X}Y}$ & Output \\ \hline
+				0 & 0 & 0                       & 0      \\ \hline
+				0 & 1 & 1                       & 1      \\ \hline
+				1 & 0 & 0                       & 1      \\ \hline
+				1 & 1 & 0                       & 1      \\ \hline
+			\end{tabular}
+		\end{table}
+
+		\item $\mathrm{RightSide = X + Y}$
+		\begin{table}[!ht]
+			\centering
+			\begin{tabular}{|c|c|c|l|}
+				\hline
+				X & Y & \multicolumn{2}{c|}{Output} \\ \hline
+				0 & 0 & \multicolumn{2}{c|}{0}      \\ \hline
+				0 & 1 & \multicolumn{2}{c|}{1}      \\ \hline
+				1 & 0 & \multicolumn{2}{c|}{1}      \\ \hline
+				1 & 1 & \multicolumn{2}{c|}{1}      \\ \hline
+			\end{tabular}
+		\end{table}	
+		
+	\end{itemize}
+As we can see, the truth tables are the same.
+
+\item $\mathrm{\overline{X} + X\cdot Y = \overline{X} + Y}$
+	\begin{itemize}
+		\item $\mathrm{LeftSide = \overline{X}+X\cdot Y}$
+		
+		\begin{table}[!ht]
+			\centering
+			\begin{tabular}{|c|c|c|c|c|}
+				\hline
+				X & Y & $\mathrm{\overline{X}}$ & $\mathrm{X \cdot Y}$  & Output \\ \hline
+				0 & 0 & 1                       & 0                     & 1      \\ \hline
+				0 & 1 & 1                       & 0                     & 1      \\ \hline
+				1 & 0 & 0                       & 0                     & 0      \\ \hline
+				1 & 1 & 0                       & 1                     & 1      \\ \hline
+			\end{tabular}
+		\end{table}
+	
+	\item $\mathrm{RightSide=\overline{X}+Y}$
+	\begin{table}[!ht]
+		\centering
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			X & Y & $\mathrm{\overline{X}}$ & Output \\ \hline
+			0 & 0 & 1                       & 1      \\ \hline
+			0 & 1 & 1                       & 1      \\ \hline
+			1 & 0 & 0                       & 0      \\ \hline
+			1 & 1 & 0                       & 1      \\ \hline
+		\end{tabular}
+	\end{table}
+	\end{itemize}
+
+As we can see, the truth tables are the same.
+\end{enumerate}
+
+\problem{}{0}
+\solution
+\begin{enumerate}[label=(\alph*)]
+	\item $\mathrm{A+1 = 1}$
+	\item $\mathrm{A\cdot A = A}$
+	\item $\mathrm{B\cdot \overline{B} = 0}$
+	\item $\mathrm{C+C = C}$
+	\item $\mathrm{x\cdot 0 = 0}$
+	\item $\mathrm{D\cdot 1 = D}$
+	\item $\mathrm{D + 0 = D}$
+	\item $\mathrm{C + \overline{C} = 1}$
+	\item $\mathrm{G+G\cdot F = G(1+F)=G}$	
+	\item $\mathrm{y+\overline{w}\cdot y = y(1+\overline{w}) = y}$
+\end{enumerate}
+\newpage
+
+\problem{}{0}
+\solution
+
+\begin{table}[!ht]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline
+		w & y & $\mathrm{\overline{w+y}}$ & $\mathrm{\overline{w}\, \overline{y}}$ & $\mathrm{\overline{wy}}$ & \begin{tabular}[c]{@{}c@{}}$\mathrm{\overline{w}+ \overline{y} }$\end{tabular} \\ \hline
+		0 & 0 & 1                         & 1                                   & 1                        & 1                                                                                  \\ \hline
+		0 & 1 & 0                         & 0                                   & 1                        & 1                                                                                  \\ \hline
+		1 & 0 & 0                         & 0                                   & 1                        & 1                                                                                  \\ \hline
+		1 & 1 & 0                         & 0                                   & 0                        & 0                                                                                  \\ \hline
+	\end{tabular}
+\end{table}
+As we can see, $\mathrm{\overline{w+y} = \overline{w}\,\overline{y}}$, and $\mathrm{\overline{wy}= \overline{w}+\overline{y}}$.
+
+
+\problem{}{0}
+\solution
+
+Sum of products expression: $\mathrm{X = \overline{A}\,\overline{B}\,\overline{C}D + \overline{A}\,\overline{B}CD+ \overline{A}B\overline{C}D + \overline{A}BCD + A\overline{B}\,\overline{C}\,\overline{D}+ AB\overline{C}D+ABCD}$
+
+\begin{align*}
+	&\text{Rearranging to work on consecuitive two terms}\\
+	\implies &\mathrm{
+		\overline{A}\,\overline{B}\,\overline{C}D + \overline{A}\,\overline{B}CD+ \overline{A}BCD +ABCD + \overline{A}B\overline{C}D + AB\overline{C}D +  A\overline{B}\,\overline{C}\,\overline{D}}\\
+	&\text{Distributive Rule - Here applied on two consecutive terms}\\
+	\implies &\mathrm{\overline{A}\,\overline{B}(D(\overline{C}+C))+ BCD(\overline{A} + A) + BD(\overline{C}(\overline{A} + A)) + A\overline{B}\,\overline{C}\,\overline{D}}\\
+	&\text{Complement Rule}\\
+	\implies &\mathrm{\overline{A}\,\overline{B}D+ BCD+BD\overline{C} + A\overline{B}\,\overline{C}\,\overline{D}}\\
+	&\text{Distributive Rule}\\
+	\implies &\mathrm{\overline{A}\,\overline{B}D + BD(\overline{C} + C) + A\overline{B}\,\overline{C}\,\overline{D}}\\
+	&\text{Complement Rule}\\
+	\implies &\mathrm{\overline{A}\,\overline{B}D + BD + A\overline{B}\,\overline{C}\,\overline{D}}\\
+	&\text{Distributive Rule}\\
+	\implies &\mathrm{D(\overline{A}\,\overline{B} + B) + A\overline{B}\,\overline{C}\,\overline{D}}\\
+	&\text{Distributive Rule}\\
+	\implies &\mathrm{D((\overline{A}+B)(\overline{B} + B)) + A\overline{B}\,\overline{C}\,\overline{D}}\\
+	&\text{Complement Rule}\\
+	\implies &\mathrm{D(\overline{A}+B) + A\overline{B}\,\overline{C}\,\overline{D}}\\
+	&\text{Distributive Rule}\\
+	\implies &\mathrm{BD + \overline{A}D + A\overline{B}\,\overline{C}\,\overline{D}}\\
+	\end{align*}
+
+\problem{}{0}
+\solution
+Expression:  $\mathrm{X = \overline{A}\,\overline{B}\,\overline{C}D + \overline{A}\,\overline{B}CD+ \overline{A}B\overline{C}D + \overline{A}BCD + A\overline{B}\,\overline{C}\,\overline{D}+ AB\overline{C}D+ABCD}$
+
+\begin{centering}
+
+
+\begin{karnaugh-map}[4][4][1][$AB$][$CD$]
+	\minterms{4, 12, 5, 13, 2, 7, 15}
+	\maxterms{0,1,3,6,8,9,10,11,14}
+	\implicant{2}{2}
+	\implicant{4}{13}
+	\implicant{5}{15}
+\end{karnaugh-map}
+
+\end{centering}
+We can see from the Karnaugh-map that we have two groups of 4, which we can use to simplify the expression. For instance, in the green group $\mathrm{B}$ and $\mathrm{\overline{B}}$ are both used, and as well, $\mathrm{C}$ and $\mathrm{\overline{C}}$. Thus, these inputs can be removed from the expression, leaving: $\mathrm{\overline{A}D}$.
+
+Similarly, in the yellow group $\mathrm{A}$ and $\mathrm{\overline{A}}$, and , $\mathrm{C}$ and $\mathrm{\overline{C}}$ are all used. Thus, these inputs can be removed from the expression too, leaving: $\mathrm{BD}$.
+
+For the red group, we cannot use it to simplify the expression further, so we are left with: $\mathrm{A\overline{B}\,\overline{C}\,\overline{D}}$.	
+
+The overall simplified expression is: $$\mathrm{X = \overline{A}D + BD + A\overline{B}\,\overline{C}\,\overline{D}}$$
+\end{document}
